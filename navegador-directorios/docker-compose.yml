@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+    jenkins:
+        image: richarvey/nginx-php-fpm
+        ports:
+            - "80"
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /webapps/redbee/navegador-folders:/var/www/html
+            - /webapps/redbee/navegador-folders/default.conf:/etc/nginx/sites-available/default.conf 
+        networks:
+            - web
+        labels:
+            - "traefik.backend=test-folders"
+            - "traefik.frontend.rule=Host:jenkins.colonseguros.com.ar;PathPrefix:/test-folders;PathPrefixStrip:/test-folders;"
+            - "traefik.frontend.passHostHeader=true"
+networks:
+  web:
+    external:
+      name: traefik_webgateway
